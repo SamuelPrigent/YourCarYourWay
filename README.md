@@ -28,7 +28,3 @@ mvn spring-boot:run
 ```
 
 Par défaut, l’API écoute sur le port 8080.
-
-## Dépannage rapide
-
-- Connexion DB: vérifier `backend/.env` (DB_PASSWORD) et que MySQL tourne sur `localhost:3306`.
