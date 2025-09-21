@@ -1,4 +1,4 @@
-# Backend – YourCarYourWay (setup minimal)
+# Backend – Springboot
 
 API REST Java 21 / Spring Boot 3.5.x avec MySQL local. Secrets chargés via `.env`.
 
@@ -11,12 +11,12 @@ API REST Java 21 / Spring Boot 3.5.x avec MySQL local. Secrets chargés via `.en
 ## Configuration minimale
 
 - `backend/src/main/resources/application.properties` est déjà configuré pour MySQL local (`ycyw-db`).
-- Créez `backend/.env` à partir de `backend/.env.example` et renseignez:
+- Créez votre propre `.env` à partir de `.env.example` à la racine de `backend` :
   ```env
   DB_PASSWORD=VotreMotDePasseLocal
   ```
 - Spring Boot créera la base si elle n'éxiste pas via `createDatabaseIfNotExist=true`.
-- L’utilisateur MySQL (ex: `root`) doit pouvoir se connecter depuis `localhost` et créer/écrire dans `ycyw-db`.
+- Vos identifiants MySQL (ex: `root`) doit pouvoir lire/écrire dans `ycyw-db`.
 
 ## Démarrage
 
@@ -29,7 +29,7 @@ mvn spring-boot:run
 
 Par défaut, l’API écoute sur le port 8080.
 
-# Frontend (Angular) – démarrage rapide
+# Frontend – Angular
 
 - Version minimale Node.js: 18 (LTS) ou plus récente
 
