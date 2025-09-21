@@ -21,13 +21,12 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    // get message conversation
+    // get message conversation (A<->B chronologique)
     @GetMapping("/messages/conversation")
     public List<MessageResponse> getConversation(
-            @RequestParam Integer fromUserId,
-            @RequestParam Integer toUserId,
-            @RequestParam(name = "both", defaultValue = "true") boolean bothDirections) {
-        return messageService.getConversation(fromUserId, toUserId, bothDirections);
+            @RequestParam Integer userA,
+            @RequestParam Integer userB) {
+        return messageService.getConversation(userA, userB);
     }
 
     // Send message to someone

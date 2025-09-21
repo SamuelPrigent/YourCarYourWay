@@ -16,5 +16,5 @@ public interface MessageService {
      * @param bothDirections si true, renvoie (A->B) et (B->A) triés
      *                       chronologiquement
      */
-    List<MessageResponse> getConversation(Integer fromUserId, Integer toUserId, boolean bothDirections);
+    List<MessageResponse> getConversation(Integer fromUserId, Integer toUserId);
 }

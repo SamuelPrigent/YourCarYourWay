@@ -15,8 +15,8 @@ API REST Java 21 / Spring Boot 3.5.x avec MySQL local. Secrets chargés via `.en
   ```env
   DB_PASSWORD=VotreMotDePasseLocal
   ```
-- Spring Boot créera la base au besoin via `createDatabaseIfNotExist=true`. Pas d’action manuelle requise pour ce POC.
-- Assurez-vous que l’utilisateur MySQL (ex: `root`) peut se connecter depuis `localhost` et créer/écrire dans `ycyw-db`.
+- Spring Boot créera la base si elle n'éxiste pas via `createDatabaseIfNotExist=true`.
+- L’utilisateur MySQL (ex: `root`) doit pouvoir se connecter depuis `localhost` et créer/écrire dans `ycyw-db`.
 
 ## Démarrage
 
@@ -28,3 +28,15 @@ mvn spring-boot:run
 ```
 
 Par défaut, l’API écoute sur le port 8080.
+
+## Frontend (Angular) – démarrage rapide
+
+- Version minimale Node.js: 18 (LTS) ou plus récente
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Le front http://localhost:4200

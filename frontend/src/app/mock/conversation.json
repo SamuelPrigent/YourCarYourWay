@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "Salut comment ça va ?",
+    "createdAt": "2025-09-19T17:38:40.086023Z"
+  },
+  {
+    "id": 8,
+    "fromUserId": 2,
+    "toUserId": 1,
+    "message": "Oh salut bien et toi ?",
+    "createdAt": "2025-09-20T09:36:33.441316Z"
+  },
+  {
+    "id": 14,
+    "fromUserId": 2,
+    "toUserId": 1,
+    "message": "Est ce qu'il y'a toujours un soucis pour la réservation ?",
+    "createdAt": "2025-09-20T11:05:28.927077Z"
+  },
+  {
+    "id": 15,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "Oui c'est pour ça que je te contacte.",
+    "createdAt": "2025-09-20T11:05:36.435418Z"
+  },
+  {
+    "id": 16,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "Il s'agit d'un problème sur la commande #ef34569",
+    "createdAt": "2025-09-20T13:38:41.495193Z"
+  },
+  {
+    "id": 17,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "Mais ce n'est pas urgent..",
+    "createdAt": "2025-09-20T14:47:22.607460Z"
+  },
+  {
+    "id": 18,
+    "fromUserId": 2,
+    "toUserId": 1,
+    "message": "Ok je peux m'en occuper après-demain ça ira ?",
+    "createdAt": "2025-09-20T14:47:41.039023Z"
+  },
+  {
+    "id": 19,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "Fais comme tu peux ça me va mais ça devrait pas prendre longtemps",
+    "createdAt": "2025-09-20T14:47:42.112895Z"
+  },
+  {
+    "id": 20,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "de toute façon",
+    "createdAt": "2025-09-20T14:51:01.038617Z"
+  },
+  {
+    "id": 21,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "tu travaille sur quoi ?",
+    "createdAt": "2025-09-20T14:51:02.304884Z"
+  },
+  {
+    "id": 22,
+    "fromUserId": 2,
+    "toUserId": 1,
+    "message": "J'ai une migration urgente dont je dois m'occuper",
+    "createdAt": "2025-09-20T14:51:14.395447Z"
+  },
+  {
+    "id": 23,
+    "fromUserId": 2,
+    "toUserId": 1,
+    "message": "Mais si c'est important je peux faire ton truc ce soir",
+    "createdAt": "2025-09-20T14:51:15.241623Z"
+  },
+  {
+    "id": 24,
+    "fromUserId": 1,
+    "toUserId": 2,
+    "message": "Non tkt pas",
+    "createdAt": "2025-09-20T14:51:23.739876Z"
+  }
+]
