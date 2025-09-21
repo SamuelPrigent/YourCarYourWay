@@ -10,13 +10,13 @@ API REST Java 21 / Spring Boot 3.5.x avec MySQL local. Secrets chargés via `.en
 
 ## Configuration minimale
 
-- `backend/src/main/resources/application.properties` est déjà configuré pour MySQL local (`ycyw-db`).
-- Créez votre propre `.env` à partir de `.env.example` à la racine de `backend` :
-  ```env
-  DB_PASSWORD=VotreMotDePasseLocal
-  ```
-- Spring Boot créera la base si elle n'éxiste pas via `createDatabaseIfNotExist=true`.
-- Vos identifiants MySQL (ex: `root`) doit pouvoir lire/écrire dans `ycyw-db`.
+- Base MySQL locale: `ycyw-db` créée automatiquement par Springboot si non éxistante (via `createDatabaseIfNotExist=true`).
+- Vos identifiants MySQL (ex. `root`) requiers droits de lecture/écriture sur `ycyw-db`.
+- Fichier d’environnement: créer `backend/.env` en vous basant sur l'exemple `.env.example` avec au minimum :
+
+```env
+DB_PASSWORD=VotreMotDePasseLocal
+```
 
 ## Démarrage
 
