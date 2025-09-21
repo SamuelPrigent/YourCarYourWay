@@ -8,8 +8,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   template: `
     <header class="header">
       <nav class="nav">
-        <a routerLink="/john" routerLinkActive="active">John (user)</a>
-        <a routerLink="/support" routerLinkActive="active">Tom (Support)</a>
+        <a routerLink="/john" routerLinkActive="active">John</a>
+        <a routerLink="/support" routerLinkActive="active">Tom</a>
       </nav>
     </header>
   `,
