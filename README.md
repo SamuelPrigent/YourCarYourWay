@@ -29,7 +29,7 @@ mvn spring-boot:run
 
 Par défaut, l’API écoute sur le port 8080.
 
-## Frontend (Angular) – démarrage rapide
+# Frontend (Angular) – démarrage rapide
 
 - Version minimale Node.js: 18 (LTS) ou plus récente
 
@@ -39,4 +39,4 @@ npm install
 npm start
 ```
 
-Le front http://localhost:4200
+Rendez vous sur http://localhost:4200

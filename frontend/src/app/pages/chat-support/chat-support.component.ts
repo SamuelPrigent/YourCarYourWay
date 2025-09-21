@@ -20,29 +20,31 @@ import { Subscription } from 'rxjs';
   template: `
     <section class="chat-page support-theme">
       <div class="messages" #messages>
-        <div *ngFor="let msg of messagesList; trackBy: trackById">
+        <ng-container *ngFor="let msg of messagesList; let i = index; trackBy: trackById">
+          <div class="day-separator" *ngIf="isNewDay(i)">
+            {{ msg.createdAt | date : 'dd/MM/yy' }}
+          </div>
           <div class="message-row" [class.own]="msg.fromUserId === currentUserId">
             <div class="bubble">
               <div class="text">{{ msg.message }}</div>
-              <div class="meta">{{ msg.createdAt | date : 'short' }}</div>
+              <div class="meta">{{ msg.createdAt | date : 'HH:mm' }}</div>
             </div>
           </div>
-        </div>
+        </ng-container>
       </div>
-
-      <form class="composer" (ngSubmit)="send()">
-        <input
-          type="text"
-          name="draft"
-          [(ngModel)]="draft"
-          placeholder="Votre message..."
-          aria-label="Votre message"
-        />
-        <button type="submit" aria-label="Envoyer" [disabled]="isSending || !draft.trim()">
-          <img src="assets/send.svg" alt="Envoyer" />
-        </button>
-      </form>
     </section>
+    <form class="composer" (ngSubmit)="send()">
+      <input
+        type="text"
+        name="draft"
+        [(ngModel)]="draft"
+        placeholder="Votre message..."
+        aria-label="Votre message"
+      />
+      <button type="submit" aria-label="Envoyer" [disabled]="isSending || !draft.trim()">
+        <img src="assets/send.svg" alt="Envoyer" />
+      </button>
+    </form>
   `,
   styles: [
     `
@@ -50,23 +52,34 @@ import { Subscription } from 'rxjs';
         display: block;
       }
       .chat-page {
+        /* Hauteur fixe relative au viewport pour déclencher l'overflow interne */
         --composer-h: 64px;
-        min-height: calc(100vh - 57px);
+        height: calc(100vh - 50px); /* 56px ~ header */
         display: flex;
         flex-direction: column;
       }
       .support-theme {
-        background: #e9f9ef;
+        background: #e9f7ec;
       }
-
       .messages {
-        flex: 1;
-        overflow: auto;
+        flex: 1 1 auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         padding: 16px 12px;
-        padding-bottom: calc(var(--composer-h) + 12px);
         display: flex;
         flex-direction: column;
         gap: 8px;
+      }
+      .day-separator {
+        align-self: center;
+        margin: 6px 0 10px;
+        padding: 4px 10px;
+        font-size: 12px;
+        color: #374151;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 999px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
       }
       .message-row {
         display: flex;
@@ -102,10 +115,11 @@ import { Subscription } from 'rxjs';
       .composer {
         position: sticky;
         bottom: 0;
+        margin: 0;
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 2px 12px 6px;
+        padding: 8px 12px; /* symétrique pour éviter un espace visuel en bas */
         min-height: var(--composer-h);
         border-top: 1px solid rgba(0, 0, 0, 0.08);
         background: rgba(255, 255, 255, 0.8);
@@ -161,33 +175,41 @@ export class ChatSupportComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private http: HttpClient, private ws: WsService, private zone: NgZone) {}
 
   ngOnInit(): void {
-    // console.log('[CHAT SUPPORT] ngOnInit');
     this.loadConversation();
     // subscribe to real-time updates for conversation (1,2) with both orders
-    // console.log('[CHAT SUPPORT] Subscribing WS for conversation 1-2');
     this.wsSub = this.ws.subscribeConversationAnyOrder(1, 2).subscribe(msg => {
-      //   console.log('[CHAT SUPPORT] WS message received', msg);
       const normalized = this.normalizeMessage(msg);
       this.zone.run(() => {
         if (normalized && typeof normalized === 'object' && 'id' in normalized) {
           const exists = this.messagesList.some((m: any) => m.id === (normalized as any).id);
           if (!exists) {
             this.messagesList = [...this.messagesList, normalized as any];
-            // console.log('[CHAT SUPPORT] appended WS message id', (normalized as any).id, 'len=', this.messagesList.length);
+            setTimeout(() => this.scrollToBottom(true), 0);
           } else {
-            // console.log('[CHAT SUPPORT] skipped duplicate id', (normalized as any).id);
           }
         } else {
           this.messagesList = [...this.messagesList, normalized as any];
-          //   console.log('[CHAT SUPPORT] appended WS message (no id) len=', this.messagesList.length);
+          setTimeout(() => this.scrollToBottom(true), 0);
         }
       });
     });
   }
 
   ngAfterViewInit(): void {
-    // Scroll simple une fois à l'arrivée sur la page
-    setTimeout(() => this.scrollToBottom(true), 0);
+    // Scroll simple une fois à l'arrivée sur la page + diagnostics
+    this.logScrollState('afterViewInit:before');
+    setTimeout(() => {
+      this.scrollToBottom(true);
+      this.logScrollState('afterViewInit:after t=0');
+    }, 0);
+    setTimeout(() => {
+      this.scrollToBottom(true);
+      this.logScrollState('afterViewInit:after t=50');
+    }, 50);
+    setTimeout(() => {
+      this.scrollToBottom(true);
+      this.logScrollState('afterViewInit:after t=200');
+    }, 200);
   }
 
   ngOnDestroy(): void {
@@ -198,7 +220,6 @@ export class ChatSupportComponent implements OnInit, OnDestroy, AfterViewInit {
     const params = new HttpParams().set('userA', 1).set('userB', 2);
     this.http.get<any[]>('/api/messages/conversation', { params }).subscribe({
       next: data => {
-        // console.log('[CHAT SUPPORT] REST loaded', Array.isArray(data) ? data.length : data);
         const existing: any[] = (this.messagesList ?? []).map(m => this.normalizeMessage(m) as any);
         const incoming: any[] = (data ?? []).map(m => this.normalizeMessage(m) as any);
         const byId = new Map<number, any>();
@@ -213,7 +234,6 @@ export class ChatSupportComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       error: e => {
-        // console.log('[CHAT SUPPORT] REST load error', e);
         this.messagesList = this.messagesList ?? [];
       },
     });
@@ -232,11 +252,9 @@ export class ChatSupportComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.http.post('/api/message', body).subscribe({
       next: () => {
-        // console.log('[CHAT SUPPORT] send() success');
         this.isSending = false;
       },
       error: e => {
-        // console.log('[CHAT SUPPORT] send() error', e);
         this.isSending = false;
       },
     });
@@ -244,12 +262,15 @@ export class ChatSupportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private scrollToBottom(smooth: boolean) {
     const el = this.messagesRef?.nativeElement;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     try {
       el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
     } catch {
       el.scrollTop = el.scrollHeight;
     }
+    requestAnimationFrame(() => {});
   }
 
   private isNearBottom(threshold = 100): boolean {
@@ -257,6 +278,29 @@ export class ChatSupportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!el) return true;
     const distance = el.scrollHeight - (el.scrollTop + el.clientHeight);
     return distance <= threshold;
+  }
+
+  isNewDay(index: number): boolean {
+    if (index === 0) return true;
+    const cur = this.getDayKey(this.messagesList[index]?.createdAt);
+    const prev = this.getDayKey(this.messagesList[index - 1]?.createdAt);
+    return cur !== prev;
+  }
+
+  getDayKey(value: any): string {
+    const d = value instanceof Date ? value : new Date(value);
+    // yyyy-mm-dd key
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
+  }
+
+  private logScrollState(label: string) {
+    const el = this.messagesRef?.nativeElement;
+    if (!el) {
+      return;
+    }
   }
 
   private normalizeMessage(raw: any): any {

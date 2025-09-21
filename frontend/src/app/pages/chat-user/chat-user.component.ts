@@ -20,29 +20,31 @@ import { Subscription } from 'rxjs';
   template: `
     <section class="chat-page user-theme">
       <div class="messages" #messages>
-        <div *ngFor="let msg of messagesList; trackBy: trackById">
+        <ng-container *ngFor="let msg of messagesList; let i = index; trackBy: trackById">
+          <div class="day-separator" *ngIf="isNewDay(i)">
+            {{ msg.createdAt | date : 'dd/MM/yy' }}
+          </div>
           <div class="message-row" [class.own]="msg.fromUserId === currentUserId">
             <div class="bubble">
               <div class="text">{{ msg.message }}</div>
-              <div class="meta">{{ msg.createdAt | date : 'short' }}</div>
+              <div class="meta">{{ msg.createdAt | date : 'HH:mm' }}</div>
             </div>
           </div>
-        </div>
+        </ng-container>
       </div>
-
-      <form class="composer" (ngSubmit)="send()">
-        <input
-          type="text"
-          name="draft"
-          [(ngModel)]="draft"
-          placeholder="Votre message..."
-          aria-label="Votre message"
-        />
-        <button type="submit" aria-label="Envoyer" [disabled]="isSending || !draft.trim()">
-          <img src="assets/send.svg" alt="Envoyer" />
-        </button>
-      </form>
     </section>
+    <form class="composer" (ngSubmit)="send()">
+      <input
+        type="text"
+        name="draft"
+        [(ngModel)]="draft"
+        placeholder="Votre message..."
+        aria-label="Votre message"
+      />
+      <button type="submit" aria-label="Envoyer" [disabled]="isSending || !draft.trim()">
+        <img src="assets/send.svg" alt="Envoyer" />
+      </button>
+    </form>
   `,
   styles: [
     `
@@ -50,25 +52,35 @@ import { Subscription } from 'rxjs';
         display: block;
       }
       .chat-page {
-        /* header height already excluded by layout */
+        /* Hauteur fixe relative au viewport pour déclencher l'overflow interne */
         --composer-h: 64px;
-        min-height: calc(100vh - 57px);
+        height: calc(100vh - 56px); /* 56px ~ header */
         display: flex;
         flex-direction: column;
+        overflow: hidden; /* évite un espace sous le composer sticky */
       }
       .user-theme {
         background: #eaf3ff;
       }
-
       .messages {
-        flex: 1;
-        overflow: auto;
+        flex: 1 1 auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         padding: 16px 12px;
-        /* leave space for the fixed composer */
-        padding-bottom: calc(var(--composer-h) + 12px);
         display: flex;
         flex-direction: column;
         gap: 8px;
+      }
+      .day-separator {
+        align-self: center;
+        margin: 6px 0 10px;
+        padding: 4px 10px;
+        font-size: 12px;
+        color: #374151;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 999px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
       }
       .message-row {
         display: flex;
@@ -104,10 +116,11 @@ import { Subscription } from 'rxjs';
       .composer {
         position: sticky;
         bottom: 0;
+        margin: 0;
+        padding: 8px 12px;
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 2px 12px 6px;
         min-height: var(--composer-h);
         border-top: 1px solid rgba(0, 0, 0, 0.08);
         background: rgba(255, 255, 255, 0.8);
@@ -162,38 +175,40 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private http: HttpClient, private ws: WsService, private zone: NgZone) {}
 
   ngOnInit(): void {
-    // console.log('[CHAT USER] ngOnInit');
     this.loadConversation();
     // subscribe to real-time updates for conversation (1,2) with both orders
-    // console.log('[CHAT USER] Subscribing WS for conversation 1-2');
     this.wsSub = this.ws.subscribeConversationAnyOrder(1, 2).subscribe(msg => {
-      //   console.log('[CHAT USER] WS message received', msg);
       const normalized = this.normalizeMessage(msg);
       this.zone.run(() => {
         if (normalized && typeof normalized === 'object' && 'id' in normalized) {
           const exists = this.messagesList.some((m: any) => m.id === (normalized as any).id);
           if (!exists) {
             this.messagesList = [...this.messagesList, normalized as any];
-            // console.log(
-            //   '[CHAT USER] appended WS message id',
-            //   (normalized as any).id,
-            //   'len=',
-            //   this.messagesList.length
-            // );
-          } else {
-            // console.log('[CHAT USER] skipped duplicate id', (normalized as any).id);
+            setTimeout(() => this.scrollToBottom(true), 0);
           }
         } else {
           this.messagesList = [...this.messagesList, normalized as any];
-          //   console.log('[CHAT USER] appended WS message (no id) len=', this.messagesList.length);
+          setTimeout(() => this.scrollToBottom(true), 0);
         }
       });
     });
   }
 
   ngAfterViewInit(): void {
-    // Scroll simple une fois à l'arrivée sur la page
-    setTimeout(() => this.scrollToBottom(true), 0);
+    // Scroll simple une fois à l'arrivée sur la page + diagnostics
+    this.logScrollState('afterViewInit:before');
+    setTimeout(() => {
+      this.scrollToBottom(true);
+      this.logScrollState('afterViewInit:after t=0');
+    }, 0);
+    setTimeout(() => {
+      this.scrollToBottom(true);
+      this.logScrollState('afterViewInit:after t=50');
+    }, 50);
+    setTimeout(() => {
+      this.scrollToBottom(true);
+      this.logScrollState('afterViewInit:after t=200');
+    }, 200);
   }
 
   ngOnDestroy(): void {
@@ -204,7 +219,6 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
     const params = new HttpParams().set('userA', 1).set('userB', 2);
     this.http.get<any[]>('/api/messages/conversation', { params }).subscribe({
       next: data => {
-        // console.log('[CHAT USER] REST loaded', Array.isArray(data) ? data.length : data);
         const existing: any[] = (this.messagesList ?? []).map(m => this.normalizeMessage(m) as any);
         const incoming: any[] = (data ?? []).map(m => this.normalizeMessage(m) as any);
         const byId = new Map<number, any>();
@@ -215,7 +229,6 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
         this.messagesList = merged;
       },
       error: e => {
-        // console.log('[CHAT USER] REST load error', e);
         this.messagesList = this.messagesList ?? [];
       },
     });
@@ -234,11 +247,9 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.http.post('/api/message', body).subscribe({
       next: () => {
-        // console.log('[CHAT USER] send() success');
         this.isSending = false;
       },
       error: e => {
-        // console.log('[CHAT USER] send() error', e);
         this.isSending = false;
       },
     });
@@ -246,12 +257,37 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private scrollToBottom(smooth: boolean) {
     const el = this.messagesRef?.nativeElement;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     try {
       el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
     } catch {
       el.scrollTop = el.scrollHeight;
     }
+    requestAnimationFrame(() => {});
+  }
+
+  private logScrollState(label: string) {
+    const el = this.messagesRef?.nativeElement;
+    if (!el) {
+      return;
+    }
+  }
+
+  isNewDay(index: number): boolean {
+    if (index === 0) return true;
+    const cur = this.getDayKey(this.messagesList[index]?.createdAt);
+    const prev = this.getDayKey(this.messagesList[index - 1]?.createdAt);
+    return cur !== prev;
+  }
+
+  getDayKey(value: any): string {
+    const d = value instanceof Date ? value : new Date(value);
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
   }
 
   private normalizeMessage(raw: any): any {
