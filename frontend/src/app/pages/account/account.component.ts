@@ -166,7 +166,7 @@ interface UserProfile {
       .wrap {
         max-width: 910px;
         margin: 20px auto 40px;
-        padding: 34px 32px 40px;
+        padding: 14px 32px 40px;
       }
       .back {
         margin: 4px 0 12px;
