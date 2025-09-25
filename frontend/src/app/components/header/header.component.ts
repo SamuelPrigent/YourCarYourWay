@@ -63,9 +63,13 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         display: inline-flex;
         align-items: center;
         gap: 0;
-        background: #e6f0ff; /* bleu clair un peu plus foncé que la barre */
+        /* background: #e6f0ff;
         border: 1px solid #c7dbff;
-        color: #173a8b; /* bleu foncé texte */
+        color: #173a8b; */
+        /*  */
+        background: #f9f9f9;
+        border: 1px solid #d9d9d9;
+        color: #242424;
         padding: 6px 8px;
         border-radius: 999px;
       }
@@ -75,7 +79,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         display: inline-block;
       }
       .combo .opt a.active-inner {
-        font-weight: 700;
         text-decoration: underline;
         text-underline-offset: 3px;
       }
