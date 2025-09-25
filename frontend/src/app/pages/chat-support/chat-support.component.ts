@@ -19,6 +19,20 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, FormsModule, DatePipe],
   template: `
     <section class="chat-page support-theme">
+      <header class="thread-header">
+        <div class="thread-left">
+          <span class="avatar">
+            <img src="assets/user.svg" alt="Avatar John" />
+          </span>
+          <div class="thread-meta">
+            <h2>John</h2>
+            <p>En ligne</p>
+          </div>
+        </div>
+        <div class="thread-actions" aria-hidden="true">
+          <img src="assets/points.svg" alt="Décoration" />
+        </div>
+      </header>
       <div class="messages" #messages>
         <ng-container *ngFor="let msg of messagesList; let i = index; trackBy: trackById">
           <div class="day-separator" *ngIf="isNewDay(i)">
@@ -52,9 +66,8 @@ import { Subscription } from 'rxjs';
         display: block;
       }
       .chat-page {
-        /* Hauteur fixe relative au viewport pour déclencher l'overflow interne */
         --composer-h: 64px;
-        height: calc(100vh - 99px);
+        height: calc(100vh - 120px);
         display: flex;
         flex-direction: column;
       }
@@ -65,10 +78,59 @@ import { Subscription } from 'rxjs';
         flex: 1 1 auto;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        padding: 16px 12px;
+        padding: 59px 12px;
         display: flex;
         flex-direction: column;
         gap: 8px;
+      }
+      .thread-header {
+        flex: 0 0 auto;
+        position: fixed;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 18px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        background: rgb(255, 255, 255);
+        backdrop-filter: saturate(1.2) blur(4px);
+      }
+      .thread-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .avatar {
+        display: inline-flex;
+        width: 37px;
+        height: 37px;
+        border-radius: 50%;
+        background: #f8f8f8;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+      }
+      .avatar img {
+        width: 21px;
+        height: 21px;
+        opacity: 0.8;
+      }
+      .thread-meta h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1f2937;
+      }
+      .thread-meta p {
+        margin: 2px 0 0;
+        font-size: 12px;
+        color: #6b7280;
+      }
+      .thread-actions img {
+        width: 25px;
+        height: 25px;
+        opacity: 0.65;
       }
       .day-separator {
         align-self: center;
@@ -119,10 +181,9 @@ import { Subscription } from 'rxjs';
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 8px 12px; /* symétrique pour éviter un espace visuel en bas */
+        padding: 8px 12px 10px;
         min-height: var(--composer-h);
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
-        background: rgba(255, 255, 255, 0.8);
+        background: #e9f7ec;
         backdrop-filter: saturate(1.2) blur(4px);
       }
       .composer input[type='text'] {
@@ -130,7 +191,7 @@ import { Subscription } from 'rxjs';
         height: 42px;
         padding: 0 12px;
         border: 1px solid #8dd9b0;
-        border-radius: 10px;
+        border-radius: 22px;
         outline: none;
         background: #f3fbf6;
       }
@@ -142,7 +203,7 @@ import { Subscription } from 'rxjs';
         width: 42px;
         height: 42px;
         border: 1px solid #6dcca0;
-        border-radius: 10px;
+        border-radius: 22px;
         background: linear-gradient(180deg, #c6efd6 0%, #ade8c6 100%);
         color: #116b3f;
         display: grid;

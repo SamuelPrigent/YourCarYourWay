@@ -19,7 +19,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             </span>
             <span class="divider"></span>
             <span class="opt">
-              <a routerLink="/support" routerLinkActive="active-inner">Tom</a>
+              <a routerLink="/support" routerLinkActive="active-inner">Support</a>
             </span>
           </a>
         </div>
@@ -44,8 +44,13 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         align-items: center;
         justify-content: space-between;
       }
-      .left { display:flex; gap: 16px; }
-      .left .link { color:#374151; }
+      .left {
+        display: flex;
+        gap: 16px;
+      }
+      .left .link {
+        color: #374151;
+      }
       a {
         text-decoration: none;
         color: #444;
