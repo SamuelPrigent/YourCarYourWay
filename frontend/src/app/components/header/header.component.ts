@@ -63,10 +63,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         display: inline-flex;
         align-items: center;
         gap: 0;
-        /* background: #e6f0ff;
-        border: 1px solid #c7dbff;
-        color: #173a8b; */
-        /*  */
         background: #f9f9f9;
         border: 1px solid #d9d9d9;
         color: #242424;
