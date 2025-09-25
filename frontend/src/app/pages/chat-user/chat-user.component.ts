@@ -54,7 +54,7 @@ import { Subscription } from 'rxjs';
       .chat-page {
         /* Hauteur fixe relative au viewport pour déclencher l'overflow interne */
         --composer-h: 64px;
-        height: calc(100vh - 56px); /* 56px ~ header */
+        height: calc(100vh - 99px);
         display: flex;
         flex-direction: column;
         overflow: hidden; /* évite un espace sous le composer sticky */
