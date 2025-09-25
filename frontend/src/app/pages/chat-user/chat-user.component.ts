@@ -228,6 +228,11 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
   isSending = false;
   private wsSub?: Subscription;
   @ViewChild('messages') private messagesRef?: ElementRef<HTMLDivElement>;
+  private initialScrollDone = false;
+  private initialScrollLoopActive = false;
+  private initialScrollAttempts = 0;
+  private initialScrollWaitFrames = 0;
+  private viewReady = false;
 
   trackById(index: number, item: any) {
     return item.id;
@@ -258,18 +263,8 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     // Scroll simple une fois à l'arrivée sur la page + diagnostics
     this.logScrollState('afterViewInit:before');
-    setTimeout(() => {
-      this.scrollToBottom(true);
-      this.logScrollState('afterViewInit:after t=0');
-    }, 0);
-    setTimeout(() => {
-      this.scrollToBottom(true);
-      this.logScrollState('afterViewInit:after t=50');
-    }, 50);
-    setTimeout(() => {
-      this.scrollToBottom(true);
-      this.logScrollState('afterViewInit:after t=200');
-    }, 200);
+    this.viewReady = true;
+    this.scheduleInitialScroll();
   }
 
   ngOnDestroy(): void {
@@ -288,6 +283,7 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
         const merged = Array.from(byId.values());
         merged.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         this.messagesList = merged;
+        this.scheduleInitialScroll();
       },
       error: e => {
         this.messagesList = this.messagesList ?? [];
@@ -316,17 +312,86 @@ export class ChatUserComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private scrollToBottom(smooth: boolean) {
-    const el = this.messagesRef?.nativeElement;
-    if (!el) {
+  private scheduleInitialScroll(): void {
+    if (this.initialScrollDone) {
       return;
     }
-    try {
-      el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
-    } catch {
+    if (!this.viewReady) {
+      return;
+    }
+    if (this.initialScrollLoopActive) {
+      return;
+    }
+    this.startInitialScrollLoop();
+  }
+
+  private startInitialScrollLoop(): void {
+    this.initialScrollLoopActive = true;
+    this.initialScrollAttempts = 0;
+    this.initialScrollWaitFrames = 0;
+    this.zone.runOutsideAngular(() => {
+      requestAnimationFrame(() => this.performInitialScroll());
+    });
+  }
+
+  private performInitialScroll(): void {
+    if (this.initialScrollDone) {
+      this.initialScrollLoopActive = false;
+      return;
+    }
+    const el = this.messagesRef?.nativeElement;
+    if (!el) {
+      this.initialScrollLoopActive = false;
+      return;
+    }
+    const hasContent = (this.messagesList?.length ?? 0) > 0;
+    if (!hasContent) {
+      this.initialScrollWaitFrames += 1;
+      if (this.initialScrollWaitFrames >= 40) {
+        this.initialScrollLoopActive = false;
+        return;
+      }
+      requestAnimationFrame(() => this.performInitialScroll());
+      return;
+    }
+    this.initialScrollWaitFrames = 0;
+    const atBottom = this.scrollToBottom(false);
+    if (atBottom) {
+      this.zone.run(() => {
+        this.initialScrollDone = true;
+        this.logScrollState('initial-scroll:done');
+      });
+      this.initialScrollLoopActive = false;
+      return;
+    }
+    this.initialScrollAttempts += 1;
+    if (this.initialScrollAttempts >= 60) {
+      this.zone.run(() => {
+        this.initialScrollDone = true;
+        this.logScrollState('initial-scroll:forced-stop');
+      });
+      this.initialScrollLoopActive = false;
+      return;
+    }
+    requestAnimationFrame(() => this.performInitialScroll());
+  }
+
+  private scrollToBottom(smooth: boolean): boolean {
+    const el = this.messagesRef?.nativeElement;
+    if (!el) {
+      return true;
+    }
+    if (smooth) {
+      try {
+        el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+      } catch {
+        el.scrollTop = el.scrollHeight;
+      }
+    } else {
       el.scrollTop = el.scrollHeight;
     }
-    requestAnimationFrame(() => {});
+    const atBottom = Math.abs(el.scrollHeight - (el.scrollTop + el.clientHeight)) <= 1;
+    return atBottom;
   }
 
   private logScrollState(label: string) {
