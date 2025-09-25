@@ -73,7 +73,7 @@ interface Agence {
       }
       .hero {
         text-align: center;
-        padding: 72px 16px 24px;
+        padding: 70px 16px 24px;
       }
       .hero h1 {
         font-size: 48px;
