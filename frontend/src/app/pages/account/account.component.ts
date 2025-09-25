@@ -358,7 +358,7 @@ interface UserProfile {
       }
       .modal-input {
         width: 100%;
-        margin-top: 8px auto;
+        margin-top: 8px;
         box-sizing: border-box;
       }
       .modal-input:focus {
