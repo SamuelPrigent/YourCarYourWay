@@ -8,8 +8,20 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   template: `
     <header class="header">
       <nav class="nav">
-        <a routerLink="/john" routerLinkActive="active">John</a>
-        <a routerLink="/support" routerLinkActive="active">Tom</a>
+        <div class="left">
+          <a routerLink="/" routerLinkActive="active">Accueil</a>
+        </div>
+        <div class="right">
+          <a class="combo" aria-label="Ouvrir John ou Tom">
+            <span class="opt">
+              <a routerLink="/john" routerLinkActive="active-inner">John</a>
+            </span>
+            <span class="divider"></span>
+            <span class="opt">
+              <a routerLink="/support" routerLinkActive="active-inner">Tom</a>
+            </span>
+          </a>
+        </div>
       </nav>
     </header>
   `,
@@ -21,14 +33,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         left: 0;
         right: 0;
         z-index: 1000;
-        padding: 12px 16px;
+        padding: 10px 16px;
         border-bottom: 1px solid #eee;
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: saturate(1.2) blur(6px);
       }
       .nav {
         display: flex;
-        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
       }
       a {
         text-decoration: none;
@@ -37,6 +50,32 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       }
       a.active {
         color: rgb(35, 24, 194);
+      }
+      .combo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0;
+        background: #e6f0ff; /* bleu clair un peu plus foncé que la barre */
+        border: 1px solid #c7dbff;
+        color: #173a8b; /* bleu foncé texte */
+        padding: 6px 8px;
+        border-radius: 999px;
+      }
+      .combo .opt a {
+        color: #173a8b;
+        padding: 2px 10px;
+        display: inline-block;
+      }
+      .combo .opt a.active-inner {
+        font-weight: 700;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .combo .divider {
+        width: 1px;
+        height: 18px;
+        background: rgba(0, 0, 0, 0.15);
+        margin: 0 4px;
       }
     `,
   ],

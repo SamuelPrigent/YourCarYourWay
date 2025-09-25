@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "nom": "Agence Paris Opéra",
+    "description": "Au cœur de Paris, proche Opéra et Grands Boulevards."
+  },
+  {
+    "id": 2,
+    "nom": "Agence Lyon Part-Dieu",
+    "description": "À deux pas de la gare Part-Dieu, pratique pour déplacements pro."
+  },
+  {
+    "id": 3,
+    "nom": "Agence Marseille Vieux-Port",
+    "description": "Point de départ idéal pour la côte méditerranéenne."
+  },
+  {
+    "id": 4,
+    "nom": "Agence Bordeaux Quinconces",
+    "description": "Centre-ville, accès rapide bassin d’Arcachon et vignobles."
+  },
+  {
+    "id": 5,
+    "nom": "Agence Lille Flandres",
+    "description": "Proche des gares Lille-Flandres/Europe."
+  }
+]

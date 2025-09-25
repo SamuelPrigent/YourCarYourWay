@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "nom": "Peugeot 208",
+    "description": "Citadine récente, aides à la conduite, très sobre en ville.",
+    "categorie": "EDMR",
+    "dailyPrice": 48.0,
+    "AgenceId": 1
+  },
+  {
+    "id": 2,
+    "nom": "Renault Clio",
+    "description": "Citadine polyvalente, Android Auto / CarPlay.",
+    "categorie": "CDMR",
+    "dailyPrice": 55.0,
+    "AgenceId": 2
+  },
+  {
+    "id": 3,
+    "nom": "Toyota Yaris Hybrid",
+    "description": "Hybride économique, parfaite pour l’urbain.",
+    "categorie": "ECMR",
+    "dailyPrice": 59.0,
+    "AgenceId": 3
+  },
+  {
+    "id": 4,
+    "nom": "Dacia Duster",
+    "description": "SUV compact robuste, bon volume de coffre.",
+    "categorie": "CFMR",
+    "dailyPrice": 69.0,
+    "AgenceId": 4
+  },
+  {
+    "id": 5,
+    "nom": "Volkswagen Golf",
+    "description": "Compacte confortable, régulateur adaptatif.",
+    "categorie": "CDAR",
+    "dailyPrice": 79.0,
+    "AgenceId": 5
+  },
+  {
+    "id": 6,
+    "nom": "BMW Série 3",
+    "description": "Berline premium, très confortable sur longs trajets.",
+    "categorie": "FDAR",
+    "dailyPrice": 119.0,
+    "AgenceId": 1
+  },
+  {
+    "id": 7,
+    "nom": "Audi Q5",
+    "description": "SUV familial premium, habitacle spacieux.",
+    "categorie": "SFAR",
+    "dailyPrice": 129.0,
+    "AgenceId": 2
+  },
+  {
+    "id": 8,
+    "nom": "Tesla Model 3",
+    "description": "Électrique, autonomie élevée, recharge rapide.",
+    "categorie": "EVAR",
+    "dailyPrice": 115.0,
+    "AgenceId": 3
+  },
+  {
+    "id": 9,
+    "nom": "Citroën C5 Aircross",
+    "description": "SUV confortable, suspensions progressives.",
+    "categorie": "IFAR",
+    "dailyPrice": 89.0,
+    "AgenceId": 4
+  },
+  {
+    "id": 10,
+    "nom": "Mercedes Classe A",
+    "description": "Compacte premium, instrumentation numérique.",
+    "categorie": "PDAR",
+    "dailyPrice": 105.0,
+    "AgenceId": 5
+  }
+]
