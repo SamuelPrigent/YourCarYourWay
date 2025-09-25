@@ -9,7 +9,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     <header class="header">
       <nav class="nav">
         <div class="left">
-          <a routerLink="/" routerLinkActive="active">Accueil</a>
+          <a routerLink="/" routerLinkActive="active" class="link">Accueil</a>
+          <a routerLink="/compte" routerLinkActive="active" class="link">Compte</a>
         </div>
         <div class="right">
           <a class="combo" aria-label="Ouvrir John ou Tom">
@@ -43,6 +44,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         align-items: center;
         justify-content: space-between;
       }
+      .left { display:flex; gap: 16px; }
+      .left .link { color:#374151; }
       a {
         text-decoration: none;
         color: #444;

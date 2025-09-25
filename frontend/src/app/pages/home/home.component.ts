@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 // Import JSON mocks (requires resolveJsonModule enabled in tsconfig)
 import vehiculesData from '../../mock/vehicule.json';
@@ -23,7 +24,7 @@ interface Agence {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <section class="hero">
       <h1>Your Car Your Way</h1>
@@ -51,18 +52,18 @@ interface Agence {
     </section>
 
     <section class="grid" *ngIf="mode() === 'vehicules'">
-      <article class="card" *ngFor="let v of vehicules">
+      <a class="card" *ngFor="let v of vehicules" [routerLink]="['/vehicule', v.id]">
         <div class="title">{{ v.nom }}</div>
         <div class="meta">{{ v.categorie }} • {{ v.dailyPrice | number : '1.0-2' }} € / jour</div>
         <p class="desc">{{ v.description }}</p>
-      </article>
+      </a>
     </section>
 
     <section class="grid" *ngIf="mode() === 'agences'">
-      <article class="card" *ngFor="let a of agences">
+      <a class="card" *ngFor="let a of agences" [routerLink]="['/agence', a.id]">
         <div class="title">{{ a.nom }}</div>
         <p class="desc">{{ a.description }}</p>
-      </article>
+      </a>
     </section>
   `,
   styles: [
@@ -188,6 +189,9 @@ interface Agence {
         padding: 14px;
         background: white;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        text-decoration: none;
+        color: inherit;
+        display: block;
       }
       .card .title {
         font-weight: 700;

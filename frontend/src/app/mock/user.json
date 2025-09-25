@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "nom": "Prigent",
+  "prenom": "Samuel",
+  "email": "samuel.prigent@example.com",
+  "password": "$2a$10$hashDeDemoNonSecurise",
+  "adresse": "12 rue des Capucins, 75002 Paris, France",
+  "dateNaissance": "1994-05-18",
+  "paymentMethods": [
+    {
+      "id": "pm_1",
+      "brand": "Visa",
+      "last4": "4242",
+      "expMonth": 6,
+      "expYear": 2027
+    },
+    {
+      "id": "pm_2",
+      "brand": "Mastercard",
+      "last4": "1881",
+      "expMonth": 11,
+      "expYear": 2026
+    }
+  ]
+}
