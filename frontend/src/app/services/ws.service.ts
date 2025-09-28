@@ -96,25 +96,21 @@ export class WsService {
     const onMsg = (message: any, dest: string) => {
       try {
         const parsed = JSON.parse(message.body);
-        // console.log('[WS] message from', dest, parsed);
         subject.next(parsed);
+        // console.log('[WS] message from', dest, parsed);
       } catch {
-        // console.log('[WS] message (raw) from', dest, message.body);
         subject.next(message.body);
+        // console.log('[WS] message (raw) from', dest, message.body);
       }
     };
 
     const subscribeNow = () => {
       try {
         const d1 = `/topic/conversation/${min}-${max}`;
-        const d2 = `/topic/conversation/${a}-${b}`;
-        const d3 = `/user/topic/conversation/${min}-${max}`;
-        const d4 = `/user/topic/conversation/${a}-${b}`;
+        const d2 = `/topic/conversation/${a}-${b}`; // if not properly ordered in back
         // console.log('[WS] subscribing to', d1, d2, d3, d4);
         const sub1 = this.client.subscribe(d1, (m: any) => onMsg(m, d1));
         const sub2 = this.client.subscribe(d2, (m: any) => onMsg(m, d2));
-        const sub3 = this.client.subscribe(d3, (m: any) => onMsg(m, d3));
-        const sub4 = this.client.subscribe(d4, (m: any) => onMsg(m, d4));
         subject.subscribe({
           complete: () => {
             try {
@@ -122,12 +118,6 @@ export class WsService {
             } catch {}
             try {
               sub2.unsubscribe();
-            } catch {}
-            try {
-              sub3.unsubscribe();
-            } catch {}
-            try {
-              sub4.unsubscribe();
             } catch {}
           },
         });
